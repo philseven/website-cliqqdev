@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+  <meta name="generator" content="Hugo 0.36.1" />
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> CLiQQ Rewards API </title>
+
+  
+  <meta name="description" content="Reward your users with CLiQQ points"> 
+  
+  
+  
+  
+  
+
+  
+
+  <meta name="author" content="CLiQQ">
+
+
+  <meta property="og:title" content="CLiQQ Rewards API" />
+<meta property="og:description" content="Reward your users with CLiQQ points" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/docs/rewards/" />
+
+
+
+<meta property="article:published_time" content="2017-04-10T16:43:08&#43;01:00"/>
+
+<meta property="article:modified_time" content="2017-04-10T16:43:08&#43;01:00"/>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-70149686-5', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+  
+
+  <link rel="canonical" href="/docs/rewards/">  
+
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+
+  <link href="/css/font.css" rel="stylesheet" type="text/css">
+  <link href="/css/kube.min.css" rel="stylesheet" type="text/css">
+  <link href="/css/kube.legenda.css" rel="stylesheet" type="text/css">
+  <link href="/css/highlight.css" rel="stylesheet" type="text/css">
+  <link href="/css/master.css" rel="stylesheet" type="text/css">
+  <link href="/css/kube.demo.css" rel="stylesheet" type="text/css">
+
+ <link href="/css/custom.css" rel="stylesheet" type="text/css">
+
+  <script src="/js/jquery-2.1.4.min.js" type="text/javascript">
+  </script>
+
+  <script type="text/javascript" src="/js/tocbot.min.js"></script>
+</head>
+
+
+<body class="page-kube">
+  <header> <div class="show-sm">
+    <div id="nav-toggle-box">
+      <div id="nav-toggle-brand">
+        <a href="/">CLiQQ Developer</a>
+      </div><a data-component="toggleme" data-target="#top" href="#" id="nav-toggle"><i class="kube-menu"></i></a>
+    </div>
+  </div>
+  <div class="hide-sm" id="top">
+    <div id="top-brand">
+      <a href="/" title="home">CLiQQ Developer</a>
+    </div>
+    <nav id="top-nav-main">
+      <ul>
+       
+       
+    <li><a href="/docs/" >Docs</a></li>
+    
+      </ul>
+    </nav>
+    <nav id="top-nav-extra"> 
+      <ul>
+          
+      </ul>
+    </nav>
+  </div>
+ </header>
+  <main>
+  <div id="main">
+    <div id="hero">
+      <h1> CLiQQ Rewards API </h1>
+      <p class="hero-lead">
+           Reward your users with CLiQQ points.
+      </p>
+
+    </div> 
+    <div id="kube-component" class="content">
+    
+
+    
+
+<h3 id="cliqq-rewards-sales-integration-api-v1-0-1">CLiQQ Rewards Sales Integration API v1.0.1</h3>
+
+<h2 id="overview">Overview</h2>
+
+<p>CLiQQ Rewards API is an XML-based API that allows authorized partners to submit sales information for loyalty system processing.</p>
+
+<h3 id="use-case">Use Case</h3>
+
+<p>Whenever the customer buys from your store, reward them with CLiQQ points that can be used at 7-Eleven by redeeming from the monthly reward catalog or converted to CLiQQ PAY credits for buying anything at the store.</p>
+
+<h3 id="salescapture-request">SalesCapture Request</h3>
+
+<p>To submit data to the API, a client must first create a well formed XML payload containing the following information:</p>
+
+<ul>
+<li>salesTransactionID: unique across all stores varchar(255)</li>
+<li>receiptNumber: varchar(255)</li>
+<li>terminalId: varchar(255)</li>
+<li>storeId: varchar(255)</li>
+<li>cashierPartyId: varchar(255)</li>
+<li>customerPartyId: varchar(255)</li>
+<li>transactionDate: datetime format YYYY-MM-DDThh:mm:ss</li>
+<li>grandTotal amount: decimal(19,2)</li>
+<li>salesItemList
+
+<ul>
+<li>salesItemId: int</li>
+<li>productId: varchar(255)</li>
+<li>unitPrice: decimal(19,2)</li>
+<li>quantity: decimal(19,2)</li>
+</ul></li>
+</ul>
+
+<h3 id="sample-request">Sample Request:</h3>
+
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;
+&lt;sales&gt;
+  &lt;salesTransactionId&gt;0007-125644-1-HTTHPZ1E&lt;/salesTransactionId&gt;
+  &lt;receiptNumber&gt;125644&lt;/receiptNumber&gt;
+  &lt;terminalId&gt;701&lt;/terminalId&gt;
+  &lt;storeId&gt;0007&lt;/storeId&gt;
+  &lt;cashierPartyId&gt;111611&lt;/cashierPartyId&gt;
+  &lt;customerPartyId&gt;9901187548600&lt;/customerPartyId&gt;
+  &lt;transactionDate&gt;2014-04-10T11:32:41&lt;/transactionDate&gt;
+  &lt;grandTotal&gt;
+    &lt;amount&gt;30.00&lt;/amount&gt;
+  &lt;/grandTotal&gt;
+  &lt;salesItemList&gt;
+    &lt;salesItem&gt;
+      &lt;salesItemId&gt;1&lt;/salesItemId&gt;
+      &lt;productId&gt;24020021&lt;/productId&gt;
+      &lt;unitPrice&gt;
+        &lt;amount&gt;7.00&lt;/amount&gt;
+      &lt;/unitPrice&gt;
+      &lt;quantity&gt;
+        &lt;value&gt;2.00&lt;/value&gt;
+      &lt;/quantity&gt;
+    &lt;/salesItem&gt;
+    &lt;salesItem&gt;
+      &lt;salesItemId&gt;2&lt;/salesItemId&gt;
+      &lt;productId&gt;51010053&lt;/productId&gt;
+      &lt;unitPrice&gt;
+        &lt;amount&gt;16.00&lt;/amount&gt;
+      &lt;/unitPrice&gt;
+      &lt;quantity&gt;
+        &lt;value&gt;1.00&lt;/value&gt;
+      &lt;/quantity&gt;
+    &lt;/salesItem&gt;
+  &lt;/salesItemList&gt;
+&lt;/sales&gt;
+</code></pre>
+
+<p>The API client should send the XML document to the capture URL via an HTTP POST request.</p>
+
+<p>Capture URL for test environment:</p>
+
+<p><code>http://test.apollo.com.ph:8084/RedemptionHost/[partnerID]/transaction</code></p>
+
+<ul>
+<li>The API client should set a header key:Content-Type to the value:text/xml</li>
+<li>The API client should set the appropriate header for HTTP Basic Authentication.</li>
+<li>For example with a username of &ldquo;Aladdin&rdquo; and a password of &ldquo;OpenSesame&rdquo;, then the field&rsquo;s value is the base64-encoding of Aladdin:OpenSesame, or QWxhZGRpbjpPcGVuU2VzYW1l. Then the Authorization header will appear as:
+
+<ul>
+<li>HTTP Header: <code>Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==</code></li>
+</ul></li>
+</ul>
+
+<p>Sample curl command to POST the XML contents of sample.xml file to the API endpoint:</p>
+
+<pre><code>curl -H &quot;Content-type: text/xml&quot; \
+-H &quot;Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==&quot; \
+-X POST \
+-d @sample.xml http://test.apollo.com.ph:8084/RedemptionHost/[partnerID]/transaction
+</code></pre>
+
+<h3 id="salescapture-responses">SalesCapture Responses</h3>
+
+<p>Submitting data to the API may return one of the following responses:</p>
+
+<ul>
+<li><p>File Accepted Response</p>
+
+<p>This response is returned when the loyalty system verifies that the card number provided is activated.</p>
+
+<p>The loyalty system will then process the submitted data for awarding of points, stars or vouchers.</p>
+
+<p>Sample File Accepted Response:</p>
+
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;
+&lt;salesCaptureResponse&gt;
+&lt;responseCode&gt;200&lt;/responseCode&gt;
+&lt;traceNumber&gt;0007-125644-1-HTTHPZ1E&lt;/traceNumber&gt;
+&lt;message&gt;
+    Your reward is being processed. Please expect an SMS to your mobile number 09xx-xxxxxxx
+    CLiQQ Rewards Hotline
+    (02) 485 7889 (0917) 714 7190 (0922) 879 2134
+    &lt;/message&gt;
+&lt;/salesCaptureResponse&gt;
+</code></pre></li>
+
+<li><p>Card Not Activated Response</p>
+
+<p>This response is returned when the loyalty system determines that the card number provided is not yet activated.</p>
+
+<p>Sample Card Not Activated Response:</p>
+
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;
+&lt;salesCaptureResponse&gt;
+&lt;responseCode&gt;412&lt;/responseCode&gt;
+&lt;traceNumber&gt;0007-125644-1-HTTHPZ1E&lt;/traceNumber&gt;
+&lt;message&gt;
+    Please register your card number using your mobile phone
+    so we can send you your reward voucher.
+    Text the following: CARDNUMBER/LASTNAME/ FIRSTNAME to 09189090711
+    CLiQQ Rewards Hotline
+    (02) 485 7889 (0917) 714 7190 (0922) 879 2134
+    &lt;/message&gt;
+&lt;/salesCaptureResponse&gt;
+</code></pre></li>
+</ul>
+
+
+    
+    </div>
+    </div>
+</main>
+  <footer></footer>
+
+
+  <script src="/js/kube.js" type="text/javascript">
+  </script>
+  <script src="/js/kube.legenda.js" type="text/javascript">
+  </script>
+  <script src="/js/master.js" type="text/javascript">
+  </script>
+</body>
+
+</html>
