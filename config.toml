@@ -1,0 +1,36 @@
+name = "CLiQQ Developer"
+theme = "kube"
+title = "CLiQQ Developer"
+license = "MIT"
+description = "Documentation for CLiQQ Integration"
+tags = ["cliqq", "7-Eleven", "documentation"]
+features = ["Minimalism","Mobile-first Design",
+  "Responsive Design",
+  "Horizontal Rhythm",
+  "Typography",
+  "Google Analytics",
+  "Disqus Commenting",
+  "OpenGraph support",
+  "Schema Structured Data",
+  "Paginated Lists",
+  "Reading Time",
+  "Last Modified time",
+  "Word Count",
+  "Related Posts",
+  "Block Templates",
+  "Table of Contents",
+  "SEO Site Verification"]
+min_version = 0.19
+googleAnalytics = "UA-70149686-5"
+ 
+[Params]
+  RSSLink = "/index.xml"
+  author = "CLiQQ" # add your company name
+  github = "philseven" # add your github profile name
+  twitter = "" # add your twitter profile
+  email = "customercare@7-eleven.com.ph"
+
+[[menu.main]]
+    name = "Docs"
+    weight = -100
+    url = "/docs/"

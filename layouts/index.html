@@ -1,0 +1,48 @@
+{{ define "title"}} {{ .Site.Title}} {{end}} {{ define "header"}} {{ partial "header" .}} {{end}} {{ define "main"}}
+
+<div id="main">
+  <div id="hero">
+    <h1>{{.Title}}</h1>
+    <p>{{.Description}}</p>
+  </div>
+  <div id="kube-features">
+    <div class="row gutters">
+      <div class="col col-4 item">
+        <figure>
+          <img alt="Baseline" height="96" src="{{ "/img/logo_cliqqpay.png" | relURL }}" width="128">
+        </figure>
+        <h3>CLiQQ PAY</h3>
+        <p>API for accepting payments at the POS</p>
+        <a href="/docs/pospay" class="button">Learn more</a>
+      </div>
+      <div class="col col-4 item">
+        <figure>
+          <img alt="CLiQQ Rewards" height="96" src="{{ "/img/logo_cliqq.png" | relURL }}" width="128">
+        </figure>
+        <h3>CLiQQ Rewards</h3>
+        <p>API for issuing points and redeeming rewards</p>
+        <a href="#" class="button">Coming soon</a>
+      </div>
+      <div class="col col-4 item">
+        <figure>
+          <img alt="CLiQQ Shop" height="96" src="{{ "/img/logo_cliqqshop.png" | relURL }}" width="128">
+        </figure>
+        <h3>CLiQQ Shop</h3>
+        <p>API for browsing product catalog and creating shipping labels</p>
+        <a href="#" class="button">Coming soon</a>
+      </div>
+    </div>
+    <div class="row gutters">
+    <div class="col col-4 item">
+      <figure>
+        <img alt="7-CONNECT" height="48" src="{{ "/img/logo_7connect.png" | relURL }}" width="128">
+      </figure>
+      <h3>7-CONNECT</h3>
+      <p>API for requesting and processing cash payments at the store.</p>
+      <a href="https://dev.philseven.com" class="button">Learn more</a>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+{{ end }} {{ define "footer"}} {{ partial "footer" .}} {{end}}
