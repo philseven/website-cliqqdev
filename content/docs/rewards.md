@@ -1,10 +1,5 @@
 ---
 title: CLiQQ Rewards API
-toc_footers: []
-includes: []
-search: true
-highlight_theme: darkula
-headingLevel: 2
 description: "Reward your users with CLiQQ points"
 date: "2017-04-10T16:43:08+01:00"
 draft: false
