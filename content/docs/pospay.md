@@ -23,4 +23,4 @@ A customer wants to pay for purchases at 7-Eleven using a mobile app. A barcode 
 * The barcode will be transmitted to your host server for processing.
 * API must respond within 8 seconds or be timed out. See API for more details on exception handling.
 
-<a href="https://pospay.cliqq.net/swagger/" class="button">View API</a>
+<a href="https://pospay.cliqq.net/" class="button">View API</a>
