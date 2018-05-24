@@ -218,7 +218,7 @@ You will need to implement the following webhook if you want to receive status u
 
 Status codes include DELIVERED TO WAREHOUSE, IN-TRANSIT, CLAIMED. The full list to be posted.
 
-**Deliver to Store Status Flow*
+**Deliver to Store Status Flow***
 
 * DELIVERED TO WAREHOUSE (Package is received by DC)
 * FOR DELIVERY (Package is for dispatch)
