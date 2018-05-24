@@ -155,6 +155,7 @@ Request
 }
 Response
 {
+  "returnCode": "1822-1234-2345",
   "trackingNumber": "30310533261428120"
 }
 ```
@@ -218,8 +219,9 @@ You will need to implement the following webhook if you want to receive status u
 
 Status codes include DELIVERED TO WAREHOUSE, IN-TRANSIT, CLAIMED. The full list to be posted.
 
-**Deliver to Store Status Flow***
+**Deliver to Store Status Flow**
 
+* CREATED or CONFIRMED (Merchant creates the shipment order)
 * DELIVERED TO WAREHOUSE (Package is received by DC)
 * FOR DELIVERY (Package is for dispatch)
 * IN-TRANSIT (Package loaded to truck)
@@ -236,7 +238,8 @@ Status codes include DELIVERED TO WAREHOUSE, IN-TRANSIT, CLAIMED. The full list 
 
 **C2C Status Flow**
 
-* FOR DROPOFF (Customer created a return label)
+* CREATED or CONFIRMED (Merchant creates the dropoff order)
+* FOR DROPOFF (Customer created a return label at kiosk)
 * DROPPED OFF (Customer hands over package to counter)
 * FOR PULL OUT (DC instructs truck to pull out, package is at store or transit)
 * DELIVERED TO WAREHOUSE (Package is received by DC)
