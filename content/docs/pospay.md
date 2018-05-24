@@ -13,14 +13,22 @@ A customer wants to pay for purchases at 7-Eleven using a mobile app. A barcode 
 
 ### Technical Notes
 
-* Barcode must be numeric and rendered in Code-128-C format with a maximum of 22 characters
-* Barcode format is `92` + `[partnerID(2)]` + `[mobileNumber(12)]` + `[token(6)]` where:
-  * 92: code for the POS to recognize a payment barcode
-  * partnerID: code assigned to the issuer
-  * mobileNumber: E.164 without the + prefix (e.g. 639xxxxxxxxx)
-  * token: is a 6 digit short-lived time-based token to ensure the barcode is only valid within a limited time window
+* Barcode must be numeric and rendered in Code-128-C format with 16-24 digits
+* Barcode format is `[partnerID(2)]` + `[paymentCode(14-22)]` where:
+  * partnerID: code assigned to the issuer. Note partner IDs that are already reserved below.
+  * paymentCode: is a unique code tied to a user's account preferably with a short-lived time-based token to ensure the barcode is only valid within a limited time window
+* A mobileNumber is expected to be returned in the response for Philippine accounts in E.164 format without the + prefix (e.g. 639xxxxxxxxx). See API documentation for more details.
 * Device screen brightness must be set to maximum for best scanner readability.
 * The barcode will be transmitted to your host server for processing.
 * API must respond within 8 seconds or be timed out. See API for more details on exception handling.
 
+### Partner ID
+
+* 10-15 - Reserved
+* 25-30 - Reserved
+* 81 - Reserved
+* 90-99 - Reserved
+
 <a href="https://pospay.cliqq.net/" class="button">View API</a>
+
+<a href="https://goo.gl/forms/WYSMbwYWUOLUqslQ2" class="button">Request for Access to Test Environment</a>
