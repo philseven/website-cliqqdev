@@ -31,7 +31,7 @@ The following map shows the current store density in Metro Manila so you may wan
 
 * This API is open to selected partners.
 * A package sent through the system is limited to maximum of volume of 27,000 cubic cm (30cm x 30cm x 30cm) or 10kg.
-* A maximum cash value of PHP 2,500 per package is accepted.
+* A maximum cash value of PHP 4,000 per package is accepted.
 * The tracking number provided by the API is 18 digits. Use EAN-128C as the barcode format when printing on a shipping label.
 * Delivery is to the [7-Eleven central distribution center](https://goo.gl/maps/UtG1TEyQRRw) in Pasig.
 * The delivery cutoff to the distribution center is at **T+0** 12:00 noon. The following table shows when the package will be ready for customer pickup at the store.
