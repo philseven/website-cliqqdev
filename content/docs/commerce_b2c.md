@@ -11,7 +11,7 @@ bref: "Use our API to send a package for customer pickup at store or drop off a 
 
 1. You have an e-commerce site and you want to provide the customer with the option to pay and pickup the order at the nearest 7-Eleven.
 
-2. You operate a marketplace and you want to provide the seller the option to drop off at the nearest 7-Eleven and the buyer to pay and pickup at their nearest 7-Eleven.
+2. You operate a marketplace and you want the buyer to pay and pickup at their nearest 7-Eleven. This is only open to high-volume sellers.
 
 ### Store List
 
@@ -76,16 +76,6 @@ The following map shows the current store density in Metro Manila so you may wan
     * POS releases Acknowledgement Receipt
     * Clerk releases package
 
-### 7-Eleven as Returns Platform
-
-* Customer inputs UID/Order Number/Waybill Number at CLiQQ Kiosk
-* ECMS generates new tracking number for the package
-* CLiQQ kiosk dispenses RETURN CODE 
-* Clerk scans RETURN CODE
-* POS releases Acknowledgement Receipt
-* ECMS sends notification to e-commerce site
-* ECMS includes package list to be pulled out by trucker
-
 ### Definition of Terms
 
 * ECMS - 7-Eleven e-commerce management system
@@ -135,84 +125,6 @@ Response
 }
 ```
 
-### Request Return Transaction
-
-This will be used to initiate a return instruction.
-
-```
-POST http://demo.cliqq.net:8086/ecms/api/v1/returns
-
-Header: Content-Type application/json
-Authorization: Bearer Ym9ic2sVzc2lvbjE6cdzNjcmV0
-
-Request
-{
-    "merchantCode": "001",
-    "merchant":"Merchant A",
-    "mobileNumber":"09123456789",
-    "merchantReference":"AXDY43322222524544",
-    "type":"RETURN"
-}
-Response
-{
-  "returnCode": "1822-1234-2345",
-  "trackingNumber": "30310533261428120"
-}
-```
-
-### Request Package Dropoff and Delivery to Store
-
-This will be used initiate a package dropoff and delivery either to store or door.
-
-```
-POST http://demo.cliqq.net:8086/ecms/api/v1/dropoff
-
-Header: Content-Type application/json
-Authorization: Bearer Ym9ic2sVzc2lvbjE6cdzNjcdmV0
-
-Request (STORE or DOOR)
-{
-    "merchantCode": "001",
-    "mobileNumber":"09123456789",
-    "merchantReference":"AXDY43322222524544",
-    "deliveryDate":"2015-08-02 17:55:59",
-    "orderDate":"2015-08-01",
-    "shipping_weight":"0.5" # in kg
-    "shipping_length":"12.3" # in cm
-    "shipping_width":"12.3" # in cm
-    "shipping_height":"12.3" # in cm
-    "description": "item description"
-    "amount":"200.00",
-    "shipmentPayor": "MERCHANT" | "SELLER",
-    "dropoffLocationId":"0166",
-    "paymentType":"COD",
-    "deliveryType":"STORE" | "DOOR",
-    "dest": {
-        "deliveryLocationId":"0166"
-    } OR
-    "dest": {
-        "address1":"xxx xxx xxx xxx xxx",
-        "address2":"xxx xxx xxx xxx xxx",
-        "city":"xxx xxx xxx xxx xxx",
-        "province":"xxx xxx xxx xxx xxx"
-    }
-}
-
-If shipmentPayor is MERCHANT, the returnCode amount is zero where seller does not pay upon dropoff and fee is collected from the merchant.
-
-Shipment fee is calculated based on origin, destination and delivery type. Upon dropoff, the shipment fee is recalculated based on actual dropoff location. If the shipment fee does not match the original shipment fee, then transaction is declined.
-
-Response
-{
-  "bookingReference": "AYW78",
-  "trackingNumber": "30310533261428120",
-  "returnCode": "1822-1234-2345",
-  "claimCode": "1822-3134-7365",
-  "amountDue": "0.00" 
-  "shippingFee": "30.00"
-}
-```
-
 ### Notification Webhook
 
 You will need to implement the following webhook if you want to receive status updates from ECMS as your shipment goes through the logistics process.
@@ -222,26 +134,6 @@ Status codes include DELIVERED TO WAREHOUSE, IN-TRANSIT, CLAIMED. The full list 
 **Deliver to Store Status Flow**
 
 * CREATED or CONFIRMED (Merchant creates the shipment order)
-* DELIVERED TO WAREHOUSE (Package is received by DC)
-* FOR DELIVERY (Package is for dispatch)
-* IN-TRANSIT (Package loaded to truck)
-* DELIVERED TO STORE (Package is received by store)
-* CLAIMED (Package is claimed by customer)
-
-**Returns Status Flow**
-
-* FOR RETURN (Customer created a return label)
-* RETURNED (Customer hands over package to counter)
-* FOR PULL OUT (DC instructs truck to pull out, package is at store or transit)
-* FOR RETURN TO MERCHANT (Package is received at DC)
-* RETURNED TO MERCHANT (Package is dispatch from the DC)
-
-**C2C Status Flow**
-
-* CREATED or CONFIRMED (Merchant creates the dropoff order)
-* FOR DROPOFF (Customer created a return label at kiosk)
-* DROPPED OFF (Customer hands over package to counter)
-* FOR PULL OUT (DC instructs truck to pull out, package is at store or transit)
 * DELIVERED TO WAREHOUSE (Package is received by DC)
 * FOR DELIVERY (Package is for dispatch)
 * IN-TRANSIT (Package loaded to truck)
