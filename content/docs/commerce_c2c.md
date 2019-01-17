@@ -1,5 +1,5 @@
 ---
-title: CLiQQ Commerce API
+title: CLiQQ Commerce C2C API
 description: "Use our API to send a package for customer pickup at store or drop off a package at store."
 date: "2017-04-10T16:43:08+01:00"
 draft: false
@@ -11,23 +11,10 @@ bref: "Use our API to send a package for customer pickup at store or drop off a 
 
 You operate a marketplace and you want to provide the seller the option to drop off at the nearest 7-Eleven and the buyer to pay and pickup at their nearest 7-Eleven.
 
-### Store List
-
-7-Eleven opens an average of 1 store per day and may schedule temporary store closures for renovation. We recommend using one of the following methods to get the most current listing.
-
-A. Download the current list of stores at the following URL. The update frequency of this csv file is at 06:00 daily. Use this to populate your own store selector.
-
-[http://s3.philseven.com/public/ecms_stores.csv](http://s3.philseven.com/public/ecms_stores.csv)
-
-B. Post to our store locator website [https://mapservice.cliqq.net/](https://mapservice.cliqq.net/) A callback URL may be appended to this URL so that the selected store can be returned back to your application.
-
-The following map shows the current store density in Metro Manila so you may want to limit results to be within a 3 kilometer radius.
-
-{{< figure src="/img/map-metromanila.png" title="Map of Metro Manila" >}}
-
 ### Technical Notes
 
 * This API is open to selected partners.
+* Refer to the [Store and Webhooks API](/docs/commerce_api/) for information on how to get the latest store listing and receiving status updates from the platform.
 * A package sent through the system is limited to maximum of volume of 27,000 cubic cm (30cm x 30cm x 30cm) or 10kg.
 * A maximum cash value of PHP 4,000 per package is accepted.
 * The tracking number provided by the API is 18 digits. Use EAN-128C as the barcode format when printing on a shipping label.

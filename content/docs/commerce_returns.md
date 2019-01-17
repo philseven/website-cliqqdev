@@ -1,5 +1,5 @@
 ---
-title: CLiQQ Commerce API
+title: CLiQQ Commerce Returns API
 description: "Use our API to send a package for customer pickup at store or drop off a package at store."
 date: "2017-04-10T16:43:08+01:00"
 draft: false

@@ -9,27 +9,14 @@ bref: "Use our API to send a package for customer pickup at store or drop off a 
 
 ### Use Case
 
-1. You have an e-commerce site and you want to provide the customer with the option to pay and pickup the order at the nearest 7-Eleven.
+1. You have an e-commerce site and you want to provide the customer with the option to pay and pickup the order at the nearest 7-Eleven. (Merchant Dropoff at DC)
 
-2. You operate a marketplace and you want the buyer to pay and pickup at their nearest 7-Eleven. This is only open to high-volume sellers.
-
-### Store List
-
-7-Eleven opens an average of 1 store per day and may schedule temporary store closures for renovation. We recommend using one of the following methods to get the most current listing.
-
-A. Download the current list of stores at the following URL. The update frequency of this csv file is at 06:00 daily. Use this to populate your own store selector.
-
-[http://s3.philseven.com/public/ecms_stores.csv](http://s3.philseven.com/public/ecms_stores.csv)
-
-B. Post to our store locator website [https://mapservice.cliqq.net/](https://mapservice.cliqq.net/) A callback URL may be appended to this URL so that the selected store can be returned back to your application.
-
-The following map shows the current store density in Metro Manila so you may want to limit results to be within a 3 kilometer radius.
-
-{{< figure src="/img/map-metromanila.png" title="Map of Metro Manila" >}}
+2. You operate a marketplace and you want the buyer to pay and pickup at their nearest 7-Eleven. This is only open to high-volume sellers. Packages will be picked up at the seller location. (Merchant Pickup)
 
 ### Technical Notes
 
 * This API is open to selected partners.
+* Refer to the [Store and Webhooks API](/docs/commerce_api/) for information on how to get the latest store listing and receiving status updates from the platform.
 * A package sent through the system is limited to maximum of volume of 27,000 cubic cm (30cm x 30cm x 30cm) or 10kg.
 * A maximum cash value of PHP 4,000 per package is accepted.
 * The tracking number provided by the API is 18 digits. Use EAN-128C as the barcode format when printing on a shipping label.
@@ -129,7 +116,7 @@ Response
 
 You will need to implement the following webhook if you want to receive status updates from ECMS as your shipment goes through the logistics process.
 
-Status codes include DELIVERED TO WAREHOUSE, IN-TRANSIT, CLAIMED. The full list to be posted.
+These are the status codes.
 
 **Deliver to Store Status Flow**
 
@@ -139,6 +126,13 @@ Status codes include DELIVERED TO WAREHOUSE, IN-TRANSIT, CLAIMED. The full list 
 * IN-TRANSIT (Package loaded to truck)
 * DELIVERED TO STORE (Package is received by store)
 * CLAIMED (Package is claimed by customer)
+
+**Unclaimed Order Status Flow**
+
+* FOR PULL OUT (Package not claimed by customer within set period)
+* PULLED OUT FROM STORE (Store has completed returns document)
+* FOR RETURN TO MERCHANT (Upon inbound scanning by DC)
+* RETURNED TO MERCHANT (Upon outbound scanning by DC)
 
 ```
 POST <YOUR_NOTIFICATION_HANDLER_URL>
