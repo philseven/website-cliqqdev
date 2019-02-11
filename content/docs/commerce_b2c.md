@@ -7,11 +7,81 @@ toc: false
 bref: "Use our API to send a package for customer pickup at store or drop off a package at store"
 ---
 
-### Use Case
+### Definition of Terms
 
-1. You have an e-commerce site and you want to provide the customer with the option to pay and pickup the order at the nearest 7-Eleven. (Merchant Dropoff at DC)
+* CDI - 7-Eleven warehouse
+* DC - Distribution center/ warehouse
+* Tracking Number - ECMS generated number paired with each package/ order
+* CLAIM CODE - 7-Connect reference number for claiming
+* RETURN CODE - 7-Connect reference number for customer returns
+* APO - Authority to Pull-out document
 
-2. You operate a marketplace and you want the buyer to pay and pickup at their nearest 7-Eleven. This is only open to high-volume sellers. Packages will be picked up at the seller location. (Merchant Pickup)
+### Use Cases
+
+#### 1. Merchant Dropoff at DC
+You have an e-commerce site/ marketplace and you want to provide the customer with the option to pay and pickup the order at the nearest 7-Eleven. In this integration, 7-Eleven will serve as a collection point for your orders. You or your seller will deliver the orders to 7E warehouse and then delivers the items to the store location chosen by the customer/ buyer.
+
+![Merchant Drop off](/B2C_Merchant_Delivery.PNG)
+
+##### Status Flow
+
+![Merchant Drop_off](/Merchant_Dropoff.PNG)
+
+**Status**|**Trigger**|**Description**
+-----|-----|-----
+CREATED/ CONFIRMED|Merchant API transaction creation|Transaction has been created in ECMS
+CANCELLED|Merchant API transaction cancellation|Transaction has been cancelled in ECMS
+DELIVERED TO WAREHOUSE|DC scanning|Item has been received in the warehouse
+FOR DELIVERY|ECMS job|Item has been added in DR
+IN-TRANSIT|DC scanning|Item has been dispatched
+DELIVERED TO WAREHOUSE\_REGIONAL|Regional scanning|Item has been received by regional
+IN-TRANSIT\_REGIONAL|Regional scanning|Item has been dispatched by regional
+ON VEHICLE TO STORE|Trucker scanning|Item has been loaded to trucker and on its way to store
+ARRIVED AT STORE|Trucker scanning|Item has arrived at the store
+DELIVERED TO STORE|SBS receiving|Store has received the item
+CLAIMED|POS transaction|Buyer has claimed the item
+FOR PULL OUT|ECMS job|Item was unclaimed
+PULLED OUT FROM STORE|SBS Returns|Item was returned to trucker by store
+ON VEHICLE TO WAREHOUSE|Trucker scanning|Item was loaded into the truck and on its way back to the DC
+ARRIVED AT WAREHOUSE|Trucker scanning|Item has arrived at the DC
+FOR RETURN TO MERCHANT|DC scanning|Item was received back at warehouse
+RETURNED TO MERCHANT|DC scanning|Item was returned to merchant during delivery
+
+
+#### 2. DC Pickup from Merchant
+You operate a marketplace and you want the buyer to pay and pickup at their nearest 7-Eleven. This is only open to high-volume sellers. Packages will be picked up at the seller location. In this integration, 7-Eleven will also serve as a collection point for your orders. 7E will pick up these orders and then delivers the items to the store location chosen by the buyer.
+
+![Merchant Pickup](/B2C_Merchant_Pickup.PNG)
+
+##### Status Flow
+
+![Merchant_Pickup](/Merchant_Pickup.PNG)
+
+**Status**|**Trigger**|**Description**
+-----|-----|-----
+CREATED/ CONFIRMED|Merchant API transaction creation|Transaction has been created in ECMS
+CANCELLED|Merchant API transaction cancellation|Transaction has been cancelled in ECMS
+FOR PICK UP|ECMS job|Transaction has been added in the pickup document
+REJECTED|Trucker scanning|Item was not received or was not handed over to trucker
+ON VEHICLE TO WAREHOUSE|Trucker scanning|Item has been loaded in trucker and on its way to CDI
+ARRIVED AT WAREHOUSE|Trucker scanning|Item has arrived in the warehouse
+DELIVERED TO WAREHOUSE|DC scanning|Item has been received in the warehouse
+FOR DELIVERY|ECMS job|Item has been added in DR
+IN-TRANSIT|DC scanning|Item has been dispatched
+DELIVERED TO WAREHOUSE\_REGIONAL|Regional scanning|Item has been received by regional
+IN-TRANSIT\_REGIONAL|Regional scanning|Item has been dispatched by regional
+ON VEHICLE TO STORE|Trucker scanning|Item has been loaded to trucker and on its way to store
+ARRIVED AT STORE|Trucker scanning|Item has arrived at the store
+DELIVERED TO STORE|SBS receiving|Store has received the item
+CLAIMED|POS transaction|Buyer has claimed the item
+FOR PULL OUT|ECMS job|Item was unclaimed
+PULLED OUT FROM STORE|SBS Returns|Item was returned to trucker by store
+ON VEHICLE TO WAREHOUSE|Trucker scanning|Item was loaded into the truck and on its way back to the DC
+ARRIVED AT WAREHOUSE|Trucker scanning|Item has arrived at the DC
+FOR RETURN TO MERCHANT|DC scanning|Item was received back at warehouse
+RETURNED TO MERCHANT|DC scanning|Item was staged/ stored for returns 
+ON VEHICLE TO MERCHANT|Trucker scanning|Item was loaded in the trucker and on its way back to seller
+ARRIVED AT MERCHANT|Trucker scanning|Item was returned to seller
 
 ### Technical Notes
 
@@ -32,56 +102,15 @@ bref: "Use our API to send a package for customer pickup at store or drop off a 
 
 * An package may only stay in the store for 7 days before it is pulled out and returned back to the distribution center waiting for merchant return.
 
-### Settlement
-
-* Payments received from the customer will be transferred every Friday to the merchant's designated bank account for all transactions made from Thu prior week to Wed. (Current supported bank is BPI.)
-* The shipping fees will be likewise need to be transferred to the Philippine Seven Corporation bank account following the same schedule.
-
-### Package Fulfillment (Prepaid) - Payment made at e-commerce site
-
-* Ordering
-    * Customer orders at e-commerce site
-    * Customer chooses to pay at e-commerce site (e.g credit card)
-    * Customer chooses which 7-Eleven branch to claim
-    * E-commerce site calls ECMS to request shipping label once payment is done
-    * ECMS replies with tracking number and CLAIM CODE
-
-### Package Fulfillment (COD) - Payment made at 7-Eleven
-
-* Ordering
-    * Customer orders thru e-commerce site
-    * Customer chooses which 7-Eleven branch to pay and claim
-    * E-commerce site calls ECMS to post/ create order
-    * ECMS replies with “PAY & CLAIM”/ REFERENCE CODE and tracking number
-
-* Payment and Claiming
-    * Customer pays transaction
-    * Clerk scans REFERENCE CODE
-    * POS sends transaction details to 7-CONNECT
-    * Clerk scans shipping label
-    * Clerk collects money from customer
-    * POS releases Acknowledgement Receipt
-    * Clerk releases package
-
-### Definition of Terms
-
-* ECMS - 7-Eleven e-commerce management system
-* CDI - 7-Eleven warehouse
-* Tracking Number - ECMS generated number paired with each package/ order
-* PAY CODE - 7-Connect reference number for payment
-* CLAIM CODE - 7-Connect reference number for claiming
-* PAY & CLAIM/ REFERENCE/ COD CODE - 7-Connect reference number for claiming for Cash on Delivery
-* RETURN CODE - 7-Connect reference number for customer returns
-* APO - Authority to Pull-out document
 
 ## API Calls
 
-### Request Shipping label
+### Request Shipment
 
-This will be used to initiate a shipment instruction for an order placed at your website. If the customer prepays for the order at the website, an amount of 0 will be passed, otherwise an amount will be specified for COD shipments. A tracking number and a shipping label will be returned so that the order can be packaged and labeled by the merchant prior to delivery to the distribution center. A Claim Code will also be returned for the merchant to give the customer.
+This will be used to initiate a shipment instruction for an order placed at your website. If the customer prepays for the order at the website, an amount of 0 will be passed, otherwise an amount will be specified for COD shipments and COD as the payment type. A tracking number and a shipping label will be returned so that the order can be packaged and labeled by the merchant prior to delivery or pickup by the distribution center. A Claim Code will also be returned for the merchant to give the customer.
 
 ```
-POST http://demo.cliqq.net:8086/ecms/api/v1/shipments
+POST http://apidemo.cliqq.net:8086/ecms/api/v1/shipments
 
 Header: Content-Type application/json
 Authorization: Bearer Ym9ic2Vzc2slvbjE6czNjcmV0
@@ -95,13 +124,21 @@ Request
     "deliveryLocationId":"0166",
     "deliveryDate":"2015-08-02 17:55:59",
     "orderDate":"2015-08-01",
+    "pickupDate":"2015-08-03",
     "shipping_weight":"0.5" # in kg
     "shipping_length":"12.3" # in cm
     "shipping_width":"12.3" # in cm
     "shipping_height":"12.3" # in cm
     "description": "item description"
     "amount":"200.00",
-    "paymentType":"COD"
+    "paymentType":"COD",
+    "packageType":"For Pickup"
+    "address": {
+        "address1":"xxx xxx xxx xxx xxx",
+        "address2":"xxx xxx xxx xxx xxx",
+        "city":"xxx xxx xxx xxx xxx",
+        "province":"xxx xxx xxx xxx xxx"
+    }
 }
 
 Response
@@ -112,40 +149,31 @@ Response
 }
 ```
 
-### Notification Webhook
+### Cancel Shipment
 
-You will need to implement the following webhook if you want to receive status updates from ECMS as your shipment goes through the logistics process.
-
-These are the status codes.
-
-**Deliver to Store Status Flow**
-
-* CREATED or CONFIRMED (Merchant creates the shipment order)
-* DELIVERED TO WAREHOUSE (Package is received by DC)
-* FOR DELIVERY (Package is for dispatch)
-* IN-TRANSIT (Package loaded to truck)
-* DELIVERED TO STORE (Package is received by store)
-* CLAIMED (Package is claimed by customer)
-
-**Unclaimed Order Status Flow**
-
-* FOR PULL OUT (Package not claimed by customer within set period)
-* PULLED OUT FROM STORE (Store has completed returns document)
-* FOR RETURN TO MERCHANT (Upon inbound scanning by DC)
-* RETURNED TO MERCHANT (Upon outbound scanning by DC)
+This will be used to cancel a shipment instruction for an order placed at your website. A cancelled order would be excluded from the orders to be picked up or delivered.
 
 ```
-POST <YOUR_NOTIFICATION_HANDLER_URL>
+POST http://apidemo.cliqq.net:8086/ecms/api/v1/cancelShipments
+
+Header: Content-Type application/json
+Authorization: Bearer Ym9ic2Vzc2slvbjE6czNjcmV0
 
 Request
 {
-    "trackingNumber":"30310533261428120"
-    "merchantReference""30310533261428120",
-    "status":"DELIVERED TO WAREHOUSE",
-    "location":"0234",
-    "timestamp"::"2015-08-02 17:55:59"
+    "trackingNumber":"30310533261428120",
+    "reason":"inventory status"
 }
 
 Response
-200
+{
+    "errorCode":"200",
+    "message":"Shipment has been cancelled."
+}
 ```
+
+
+## Settlement
+
+* Payments received from the customer will be transferred every Friday to the merchant's designated bank account for all transactions made from Thu prior week to Wed. (Current supported bank is BPI.)
+* The shipping fees will be likewise need to be transferred to the Philippine Seven Corporation bank account following the same schedule.

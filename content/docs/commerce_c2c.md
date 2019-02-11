@@ -7,9 +7,62 @@ toc: false
 bref: "Use our API to send a package for customer pickup at store or drop off a package at store"
 ---
 
+### Definition of Terms
+
+* CDI - 7-Eleven warehouse
+* DC - Distribution center/ warehouse
+* Tracking Number - ECMS generated number paired with each package/ order
+* CLAIM CODE - 7-Connect reference number for claiming
+* RETURN CODE - 7-Connect reference number for customer returns
+* APO - Authority to Pull-out document
+
 ### Use Case
 
 You operate a marketplace and you want to provide the seller the option to drop off at the nearest 7-Eleven and the buyer to pay and pickup at their nearest 7-Eleven.
+
+![](/C2C.PNG)
+
+##### Status Flow
+
+![C2C_Flow](/C2CStatus.PNG)
+
+**Status**|**Trigger**|**Description**
+-----|-----|-----
+CREATED/ CONFIRMED|Merchant API transaction creation|Transaction has been created in ECMS
+CANCELLED|Merchant API transaction cancellation|Transaction has been cancelled in ECMS
+FOR DROP OFF|Kiosk printing|Shipping label was already printed in the kiosk
+DROPPED OFF|POS transaction|Item has been dropped off at store
+FOR PULL OUT|ECMS job|Item has been added in the APO
+ON VEHICLE TO WAREHOUSE|Trucker scanning|Item has been loaded in trucker and on its way to CDI
+ARRIVED AT WAREHOUSE|Trucker scanning|Item has arrived in the warehouse
+DELIVERED TO WAREHOUSE|CDI scanning|Item has been received in CDI
+FOR DELIVERY|ECMS job|Item has been loaded to trucker and on its way to store
+IN-TRANSIT|CDI scanning|Item has been dispatched
+DELIVERED TO WAREHOUSE\_REGIONAL|Regional scanning|Item has been received by regional
+IN-TRANSIT\_REGIONAL|Regional scanning|Item has been dispatched by regional
+ON VEHICLE TO STORE|Trucker scanning|Item has been loaded to trucker and on its way to store
+ARRIVED AT STORE|Trucker scanning|Item has arrived at the store
+DELIVERED TO STORE|SBS receiving|Store has received the item
+CLAIMED|POS transaction|Buyer has claimed the item
+FOR PULL OUT|ECMS job|Item was unclaimed
+PULLED OUT FROM STORE|SBS Returns|Item was returned to trucker by store
+ON VEHICLE TO WAREHOUSE|Trucker scanning|Item was loaded into the truck and on its way back to the DC
+ARRIVED AT WAREHOUSE|Trucker scanning|Item has arrived at the DC
+DELIVERED TO WAREHOUSE|CDI scanning|Item has been received in CDI
+FOR DELIVERY|ECMS job|Item has been loaded to trucker and on its way to drop off store location
+IN-TRANSIT|CDI scanning|Item has been dispatched
+DELIVERED TO WAREHOUSE\_REGIONAL|Regional scanning|Item has been received by regional
+IN-TRANSIT\_REGIONAL|Regional scanning|Item has been dispatched by regional
+ON VEHICLE TO STORE|Trucker scanning|Item has been loaded to trucker and on its way to store
+ARRIVED AT STORE|Trucker scanning|Item has arrived at the drop off store location
+DELIVERED TO STORE|SBS receiving|Store has received the item
+CLAIMED|POS transaction|Seller has claimed the item
+FOR PULL OUT|ECMS job|Item was unclaimed by seller
+PULLED OUT FROM STORE|SBS Returns|Item was returned to trucker by store
+ON VEHICLE TO WAREHOUSE|Trucker scanning|Item was loaded into the truck and on its way back to the DC
+ARRIVED AT WAREHOUSE|Trucker scanning|Item has arrived at the DC
+FOR RETURN TO MERCHANT|CDI scanning|Item was received back at warehouse
+RETURNED TO MERCHANT|CDI scanning|Item was returned to merchant during delivery
 
 ### Technical Notes
 
@@ -28,87 +81,9 @@ You operate a marketplace and you want to provide the seller the option to drop 
 | Visayas | **T+5** 08:00 |
 | Mindanao | **T+10** 08:00 |
 
-* An package may only stay in the store for 7 days before it is pulled out and returned back to the distribution center waiting for merchant return.
-
-### Settlement
-
-* Payments received from the customer will be transferred every Friday to the merchant's designated bank account for all transactions made from Thu prior week to Wed. (Current supported bank is BPI.)
-* The shipping fees will be likewise need to be transferred to the Philippine Seven Corporation bank account following the same schedule.
-
-### Package Fulfillment (Prepaid) - Payment made at e-commerce site
-
-* Ordering
-    * Customer orders at e-commerce site
-    * Customer chooses to pay at e-commerce site (e.g credit card)
-    * Customer chooses which 7-Eleven branch to claim
-    * E-commerce site calls ECMS to request shipping label once payment is done
-    * ECMS replies with tracking number and CLAIM CODE
-
-### Package Fulfillment (COD) - Payment made at 7-Eleven
-
-* Ordering
-    * Customer orders thru e-commerce site
-    * Customer chooses which 7-Eleven branch to pay and claim
-    * E-commerce site calls ECMS to post/ create order
-    * ECMS replies with “PAY & CLAIM”/ REFERENCE CODE and tracking number
-
-* Payment and Claiming
-    * Customer pays transaction
-    * Clerk scans REFERENCE CODE
-    * POS sends transaction details to 7-CONNECT
-    * Clerk scans shipping label
-    * Clerk collects money from customer
-    * POS releases Acknowledgement Receipt
-    * Clerk releases package
-
-### Definition of Terms
-
-* ECMS - 7-Eleven e-commerce management system
-* CDI - 7-Eleven warehouse
-* Tracking Number - ECMS generated number paired with each package/ order
-* PAY CODE - 7-Connect reference number for payment
-* CLAIM CODE - 7-Connect reference number for claiming
-* PAY & CLAIM/ REFERENCE/ COD CODE - 7-Connect reference number for claiming for Cash on Delivery
-* RETURN CODE - 7-Connect reference number for customer returns
-* APO - Authority to Pull-out document
+* An package may only stay in the store for 7 days before it is pulled out and returned back to the distribution center for delivery to buyer or for waiting for merchant return.
 
 ## API Calls
-
-### Request Shipping label
-
-This will be used to initiate a shipment instruction for an order placed at your website. If the customer prepays for the order at the website, an amount of 0 will be passed, otherwise an amount will be specified for COD shipments. A tracking number and a shipping label will be returned so that the order can be packaged and labeled by the merchant prior to delivery to the distribution center. A Claim Code will also be returned for the merchant to give the customer.
-
-```
-POST http://demo.cliqq.net:8086/ecms/api/v1/shipments
-
-Header: Content-Type application/json
-Authorization: Bearer Ym9ic2Vzc2slvbjE6czNjcmV0
-
-Request
-{
-    "merchantCode": "001",
-    "merchant":"Merchant A",
-    "mobileNumber":"09123456789",
-    "merchantReference":"AXDY43322222524544",
-    "deliveryLocationId":"0166",
-    "deliveryDate":"2015-08-02 17:55:59",
-    "orderDate":"2015-08-01",
-    "shipping_weight":"0.5" # in kg
-    "shipping_length":"12.3" # in cm
-    "shipping_width":"12.3" # in cm
-    "shipping_height":"12.3" # in cm
-    "description": "item description"
-    "amount":"200.00",
-    "paymentType":"COD"
-}
-
-Response
-{
-  "trackingNumber": "30310533261428120",
-  "shippingLabel": "https://labels.cliqq.net/ksd9234jd9023490234.pdf",
-  "claimCode": "9917-6789-0023"
-}
-```
 
 ### Request Package Dropoff and Delivery to Store
 
@@ -136,6 +111,7 @@ Request (STORE or DOOR)
     "shipmentPayor": "MERCHANT" | "SELLER",
     "dropoffLocationId":"0166",
     "paymentType":"COD",
+    "packageType":"C2C"
     "deliveryType":"STORE" | "DOOR",
     "dest": {
         "deliveryLocationId":"0166"
@@ -162,46 +138,30 @@ Response
   "shippingFee": "30.00"
 }
 ```
+### Cancel Shipment
 
-### Notification Webhook
-
-You will need to implement the following webhook if you want to receive status updates from ECMS as your shipment goes through the logistics process.
-
-Status codes include DELIVERED TO WAREHOUSE, IN-TRANSIT, CLAIMED. The full list to be posted.
-
-**Deliver to Store Status Flow**
-
-* CREATED or CONFIRMED (Merchant creates the shipment order)
-* DELIVERED TO WAREHOUSE (Package is received by DC)
-* FOR DELIVERY (Package is for dispatch)
-* IN-TRANSIT (Package loaded to truck)
-* DELIVERED TO STORE (Package is received by store)
-* CLAIMED (Package is claimed by customer)
-
-**C2C Status Flow**
-
-* CREATED or CONFIRMED (Merchant creates the dropoff order)
-* FOR DROPOFF (Customer created a return label at kiosk)
-* DROPPED OFF (Customer hands over package to counter)
-* FOR PULL OUT (DC instructs truck to pull out, package is at store or transit)
-* DELIVERED TO WAREHOUSE (Package is received by DC)
-* FOR DELIVERY (Package is for dispatch)
-* IN-TRANSIT (Package loaded to truck)
-* DELIVERED TO STORE (Package is received by store)
-* CLAIMED (Package is claimed by customer)
+This will be used to cancel a shipment instruction for an order placed at your website. A cancelled order would be excluded from the orders to be picked up or delivered.
 
 ```
-POST <YOUR_NOTIFICATION_HANDLER_URL>
+POST http://apidemo.cliqq.net:8086/ecms/api/v1/cancelShipments
+
+Header: Content-Type application/json
+Authorization: Bearer Ym9ic2Vzc2slvbjE6czNjcmV0
 
 Request
 {
-    "trackingNumber":"30310533261428120"
-    "merchantReference""30310533261428120",
-    "status":"DELIVERED TO WAREHOUSE",
-    "location":"0234",
-    "timestamp"::"2015-08-02 17:55:59"
+    "trackingNumber":"30310533261428120",
+    "reason":"inventory status"
 }
 
 Response
-200
+{
+    "errorCode":"200",
+    "message":"Shipment has been cancelled."
+}
 ```
+
+## Settlement
+
+* Payments received from the customer will be transferred every Friday to the merchant's designated bank account for all transactions made from Thu prior week to Wed. (Current supported bank is BPI.)
+* The shipping fees will be likewise need to be transferred to the Philippine Seven Corporation bank account following the same schedule.

@@ -17,11 +17,13 @@ bref: "Use our API to send a package for customer pickup at store or drop off a 
 
 [Read the B2C Docs](/docs/commerce_b2c/)
 
-### C2C
+### [C2C] (/docs/commerce_c2c/)
 
 You operate a marketplace and you want to provide the seller the option to drop off at the nearest 7-Eleven and the buyer to pay and pickup at their nearest 7-Eleven. This is valid only for drop-offs less than 5 packages per day per seller.
 
 C2C is only available to selected partners.
+
+[Read the C2C Docs](/docs/commerce_c2c/)
 
 ### [Returns](/docs/commerce_returns/)
 

@@ -22,6 +22,23 @@ You want to allow your customers to return items at their nearest 7-Eleven.
 * ECMS sends notification to e-commerce site
 * ECMS includes package list to be pulled out by trucker
 
+#### Returns Status Flow
+
+![Returns](/Returns.PNG)
+
+**Status**|**Trigger**|**Description**
+-----|-----|-----
+FOR RETURN|Kiosk transaction|Customer requests for return in the kiosk
+RETURNED|POS transaction|Item was handed over to counter
+FOR PULL OUT|ECMS job|Item was included in the APO list
+PULLED OUT FROM STORE|SBS Returns|Item was returned to trucker by store
+ON VEHICLE TO WAREHOUSE|Trucker scanning|Item was loaded into the truck and on its way to the DC
+ARRIVED AT WAREHOUSE|Trucker scanning|Item has arrived at the DC
+FOR RETURN TO MERCHANT|DC scanning|Item was received at warehouse
+RETURNED TO MERCHANT|DC scanning|Item was staged/ stored for returns/ Item was returned to merchant during merchant's delivery
+ON VEHICLE TO MERCHANT|Trucker scanning|Item was loaded in the trucker and on its way to merchant
+ARRIVED AT MERCHANT|Trucker scanning|Item was handed over to merchant
+
 ### Business Rules
 
 * Merchant submits valid return IDs to the platform
@@ -53,10 +70,4 @@ Response
 }
 ```
 
-**Returns Status Flow**
 
-* FOR RETURN (Customer created a return label)
-* RETURNED (Customer hands over package to counter)
-* FOR PULL OUT (DC instructs truck to pull out, package is at store or transit)
-* FOR RETURN TO MERCHANT (Package is received at DC)
-* RETURNED TO MERCHANT (Package is dispatch from the DC)
