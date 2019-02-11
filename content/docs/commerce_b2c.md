@@ -105,6 +105,55 @@ ARRIVED AT MERCHANT|Trucker scanning|Item was returned to seller
 
 ## API Calls
 
+### Authentication
+
+#### Authentication/ Create Access Token
+
+Authentication to the API is done via OAuth2.0. Each client application, this includes the POS (via 7-Connect), CLiQQ kiosks, CLiQQ app, and admin system will be given its own client id and client secret to be stored securely inside the application.
+
+```
+POST https://<server path>/accounts/oauth2/token
+
+URL Parameters
+
+client_id = {client id}
+client_secret = {client secret}
+response_type = "token"
+grant_type = "client_credentials"
+
+Response
+{
+  "refresh_token":"788b771fed934aa5cac0da2b2e0c17cf",
+  "token_type":"bearer",
+  "access_token":"Ym9ic2Vzc2lvbjE6czNjcmV0",
+  "expires_in":7200
+}
+```
+
+#### Refresh Access Token
+
+Access Tokens expire for security purposes. To get a new access token, you will need to use the refresh token. As discussed above, access token comes with a refresh token and an expires_in value(time expressed in seconds). The API expects the client to use this expires_in value to track if the access token it is holding is already expired. Send an HTTP POST request to /oauth2/token path to get a refresh token.
+
+```
+POST https://<server path>/accounts/oauth2/token
+
+URL Parameters
+
+client_id = {client id}
+client_secret = {client secret}
+refresh_token = {refresh_token}
+response_type = "token"
+grant_type = "refresh_token"
+
+Response
+{
+  "refresh_token":"788b771fed934aa5cac0da2b2e0c17cf",
+  "token_type":"bearer",
+  "access_token":"Ym9ic2Vzc2lvbjE6czNjcmV0",
+  "expires_in":7200
+}
+```
+
 ### Request Shipment
 
 This will be used to initiate a shipment instruction for an order placed at your website. If the customer prepays for the order at the website, an amount of 0 will be passed, otherwise an amount will be specified for COD shipments and COD as the payment type. A tracking number and a shipping label will be returned so that the order can be packaged and labeled by the merchant prior to delivery or pickup by the distribution center. A Claim Code will also be returned for the merchant to give the customer.
