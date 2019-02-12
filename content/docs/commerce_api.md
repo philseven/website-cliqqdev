@@ -35,7 +35,8 @@ Request
 {
     "trackingNumber":"30310533261428120"
     "merchantReference""30310533261428120",
-    "status":"DELIVERED TO WAREHOUSE",
+    "status":"REJECTED",
+    "reason":"No merchant",
     "location":"0234",
     "timestamp"::"2015-08-02 17:55:59"
 }
