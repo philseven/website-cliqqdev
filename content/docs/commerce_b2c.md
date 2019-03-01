@@ -198,49 +198,6 @@ Response
 }
 ```
 
-### Edit Shipment
-
-This will be used to edit a shipment instruction for an order placed at your website. 
-
-```
-POST http://apidemo.cliqq.net:8086/ecms/api/v1/editShipments/{trackingNumber}
-
-Header: Content-Type application/json
-Authorization: Bearer Ym9ic2Vzc2slvbjE6czNjcmV0
-
-Request
-{
-    "merchantCode": "001",
-    "merchant":"Merchant A",
-    "mobileNumber":"09123456789",
-    "merchantReference":"AXDY43322222524544",
-    "deliveryLocationId":"0166",
-    "deliveryDate":"2015-08-02 17:55:59",
-    "orderDate":"2015-08-01",
-    "pickupDate":"2015-08-03",
-    "shipping_weight":"0.5" # in kg
-    "shipping_length":"12.3" # in cm
-    "shipping_width":"12.3" # in cm
-    "shipping_height":"12.3" # in cm
-    "description": "item description"
-    "amount":"200.00",
-    "paymentType":"COD",
-    "packageType":"For Pickup"
-    "address": {
-        "address1":"xxx xxx xxx xxx xxx",
-        "address2":"xxx xxx xxx xxx xxx",
-        "city":"xxx xxx xxx xxx xxx",
-        "province":"xxx xxx xxx xxx xxx"
-    }
-}
-
-Response
-{
-    "errorCode":"200",
-    "message":"Shipment has been updated."
-}
-```
-
 ### Cancel Shipment
 
 This will be used to cancel a shipment instruction for an order placed at your website. A cancelled order would be excluded from the orders to be picked up or delivered.

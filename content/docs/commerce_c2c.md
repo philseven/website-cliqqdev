@@ -134,17 +134,50 @@ Response
 }
 ```
 
+### Compute Shipping Fee
+
+This will be used to compute the shipping fee. The fee wil be based on the matrix setup between the seller's chosen drop off island group (Luzon/ Visayas/ Mindanao) and the buyer's chosen pick up location.
+
+Upon dropoff, the shipment fee is recalculated based on actual dropoff location. If the shipment fee does not match the original shipment fee, then transaction is declined.
+
+```
+POST http://demo.cliqq.net:8086/ecms/api/v1/shippingFee
+
+Header: Content-Type application/json
+Authorization: Bearer Ym9ic2sVzc2lvbjE6cdzNjcdmV0
+
+Request
+{
+    "merchantCode": "001",
+    "shipping_weight":"0.5" # in kg
+    "shipping_length":"12.3" # in cm
+    "shipping_width":"12.3" # in cm
+    "shipping_height":"12.3" # in cm
+    "description": "item description"
+    "amount":"200.00",
+    "shipmentPayor": "BUYER" | "MERCHANT",
+    "dropoffLocationId":"0166",
+    "deliveryLocationId":"0166"
+}
+
+Response
+
+{
+  "shippingFee": "30.00"
+}
+```
+
 ### Request Package Dropoff and Delivery to Store
 
 This will be used initiate a package dropoff and delivery either to store or door.
 
 ```
-POST http://demo.cliqq.net:8086/ecms/api/v1/dropoff
+POST http://demo.cliqq.net:8086/ecms/api/v1/shipments
 
 Header: Content-Type application/json
 Authorization: Bearer Ym9ic2sVzc2lvbjE6cdzNjcdmV0
 
-Request (STORE or DOOR)
+Request
 {
     "merchantCode": "001",
     "mobileNumber":"09123456789",
@@ -157,36 +190,26 @@ Request (STORE or DOOR)
     "shipping_height":"12.3" # in cm
     "description": "item description"
     "amount":"200.00",
-    "shipmentPayor": "MERCHANT" | "SELLER",
-    "dropoffLocationId":"0166",
+    "shippingFee":"300.00",
+    "shipmentPayor": "BUYER" | "MERCHANT",
+    "dropoffLocation":"Luzon" | "Visayas" | "Mindanao",
     "paymentType":"COD",
     "packageType":"C2C"
-    "deliveryType":"STORE" | "DOOR",
-    "dest": {
-        "deliveryLocationId":"0166"
-    } OR
-    "dest": {
-        "address1":"xxx xxx xxx xxx xxx",
-        "address2":"xxx xxx xxx xxx xxx",
-        "city":"xxx xxx xxx xxx xxx",
-        "province":"xxx xxx xxx xxx xxx"
-    }
+    "deliveryLocationId":"0166"
 }
 
-If shipmentPayor is MERCHANT, the returnCode amount is zero where seller does not pay upon dropoff and fee is collected from the merchant.
+If shipmentPayor is MERCHANT, the claimCode amount is only for the product the buyer buys and fee is collected from the merchant. If shipmentPayour is BUYER, the claimCode amount is for the product plus the calculated shipment fee and is paid by the buyer when he claims the item.
 
-Shipment fee is calculated based on origin, destination and delivery type. Upon dropoff, the shipment fee is recalculated based on actual dropoff location. If the shipment fee does not match the original shipment fee, then transaction is declined.
 
 Response
 {
   "bookingReference": "AYW78",
   "trackingNumber": "30310533261428120",
-  "returnCode": "1822-1234-2345",
+  "dropOffCode": "1822-1234-2345",
   "claimCode": "1822-3134-7365",
-  "amountDue": "0.00" 
-  "shippingFee": "30.00"
 }
 ```
+
 ### Cancel Shipment
 
 This will be used to cancel a shipment instruction for an order placed at your website. A cancelled order would be excluded from the orders to be picked up or delivered.
